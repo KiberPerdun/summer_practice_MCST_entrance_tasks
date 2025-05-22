@@ -1,0 +1,13 @@
+CompileFlags:
+  Add: [
+    -I./TASK-1/include,
+    -I./TASK-2/include,
+    -I./TASK-3/include,
+    -I./TASK-4/include,
+    -I./TASK-5/include,
+    -I./TASK-6/include,
+    -I./TASK-7/include,
+    -I./TASK-8/include,
+    -I./TASK-9/include,
+    -I./TASK-10/include,
+  ]

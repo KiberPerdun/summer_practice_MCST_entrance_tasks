@@ -3,8 +3,8 @@ CC = gcc
 task1: TASK-1/src/main.c
 	$(CC) $< -o TASK-1/main
 
-task2: TASK-2/src/main.c
-	$(CC) $< -o TASK-2/main
+task2:
+	$(CC) -I TASK-2/include TASK-2/src/*.c -o TASK-2/main
 
 task3: TASK-3/src/main.c
 	$(CC) $< -o TASK-3/main
