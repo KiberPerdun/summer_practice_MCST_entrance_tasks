@@ -4,6 +4,7 @@
 
 #include "unix.h"
 #include <stdio.h>
+#include "io_uring.h"
 
 int
 main (i32 argc, char *argv[])
@@ -39,13 +40,41 @@ main (i32 argc, char *argv[])
           exit (EXIT_FAILURE);
         }
 
-      char buffer[100];
-      ssize_t num_read = recv (fd, buffer, sizeof (buffer) - 1, 0);
-      if (num_read > 0)
+      struct io_uring ring;
+      if (io_uring_queue_init (8, &ring, 0) < 0)
         {
-          buffer[num_read] = '\0';
-          printf ("Получено сообщение: %s\n", buffer);
+          perror ("uring");
+          close (fd);
+          unix_close (u);
+          unlink ("/tmp/1");
+          exit (EXIT_FAILURE);
         }
+
+      char buffer[256];
+
+      struct io_uring_sqe *sqe = io_uring_get_sqe (&ring);
+      io_uring_prep_recv (sqe, fd, buffer, sizeof (buffer), 0);
+
+      io_uring_submit (&ring);
+
+      struct io_uring_cqe * cqe;
+      if (io_uring_wait_cqe (&ring, &cqe) < 0)
+        {
+          perror ("cqe");
+          io_uring_queue_exit (&ring);
+          close (fd);
+          unix_close (u);
+          unlink ("/tmp/1");
+          exit (EXIT_FAILURE);
+        }
+
+      if (cqe->res > 0)
+        {
+          printf ("recv: %s", buffer);
+        }
+
+      io_uring_cqe_seen (&ring, cqe);
+      io_uring_queue_exit (&ring);
 
       close (fd);
       unix_close (u);

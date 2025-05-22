@@ -1,10 +1,19 @@
 CC = gcc
+LIBURING_REPO = https://github.com/axboe/liburing/
+LIBURING_DIR = liburing
+
+all: task1 task2 task3 task4 task5 task6 task7 task8 task9 task10
+
+liburing:
+	git clone $(LIBURING_REPO) $(LIBURING_DIR)
+	cd $(LIBURING_DIR) && ./configure && make
 
 task1: TASK-1/src/main.c
 	$(CC) $< -o TASK-1/main
 
-task2:
-	$(CC) -I TASK-2/include TASK-2/src/*.c -o TASK-2/main
+task2: liburing
+	$(CC) -I TASK-2/include -I $(LIBURING_DIR)/src/include -I liburing/src/include \
+ 			 TASK-2/src/*.c $(LIBURING_DIR)/src/liburing.a -o TASK-2/main
 
 task3: TASK-3/src/main.c
 	$(CC) $< -o TASK-3/main
