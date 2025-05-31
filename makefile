@@ -34,7 +34,7 @@ task8: TASK-8/src/main.c
 	$(CC) $< -o TASK-8/main
 
 task9: TASK-9/src/main.c
-	$(CC) $< -o TASK-9/main
+	$(CC) -I TASK-9/include TASK-9/src/*.c -o TASK-9/main
 
 task10: TASK-10/src/main.c
 	$(CC) $< -o TASK-10/main
