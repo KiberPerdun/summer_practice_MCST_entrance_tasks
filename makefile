@@ -25,7 +25,7 @@ task5: TASK-5/src/main.c
 	$(CC) -I TASK-5/include TASK-5/src/*.c -o TASK-5/main
 
 task6: TASK-6/src/main.c
-	$(CC) $< -o TASK-6/main
+	$(CC) -I TASK-6/include TASK-6/src/*.c -o TASK-6/main
 
 task7: TASK-7/src/main.c
 	$(CC) $< -o TASK-7/main
