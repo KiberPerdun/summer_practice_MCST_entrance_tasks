@@ -49,18 +49,20 @@ main (int argc, char *argv[])
   printf ("[=+=] uid владельца -> %ju\n", sb.st_ino);
   printf ("[=+=] uid владельца -> %ju\n", sb.st_ino);
 
-  if (S_ISCHR (sb.st_mode) || S_ISBLK (sb.st_mode))
-    {
-      printf ("[=+=] major номер устройства -> %u\n", major (sb.st_rdev));
-      printf ("[=+=] minor номер устройства -> %u\n", minor (sb.st_rdev));
-    }
+
 
   printf ("[=+=] размер файла  -> %ju байт\n", sb.st_size);
   printf ("[=+=] размер блока  -> %ju байт\n", sb.st_blksize);
   printf ("[=+=] кол-во блоков -> %ju\n", sb.st_blocks);
   if (sb.st_blocks < sb.st_size / 512 )
     // file has holes. Не придумал как назвать кратко
-    printf ("файл имеет промежутки");
+    printf ("файл имеет дыры");
+
+  if (S_ISCHR (sb.st_mode) || S_ISBLK (sb.st_mode))
+    {
+      printf ("[=+=] major номер устройства -> %u\n", major (sb.st_rdev));
+      printf ("[=+=] minor номер устройства -> %u\n", minor (sb.st_rdev));
+    }
 
   printf ("[=+=] время последнего доступа к файлу    -> %s", ctime (&sb.st_atime));
   printf ("[=+=] время последней модификации файла   -> %s", ctime (&sb.st_mtime));
