@@ -3,6 +3,8 @@
 //
 
 #include "sort.h"
+
+#include <ctype.h>
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -12,11 +14,13 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+#define SORT_RADIX 1
+
 u64
 get_sort_type (const char *str)
 {
   if (strcmp (str, "radix") == 0)
-    return 0;
+    return SORT_RADIX;
   else
     {
       fprintf (stderr, "Неизвестный тип сортировки: %s\n", str);
@@ -27,11 +31,12 @@ get_sort_type (const char *str)
 int
 main (int argc, char *argv[])
 {
-  u64 fsize, sort_type;
+  u64 fsize, sort_type, num_lines, line_index, start;
   struct stat st;
+  line_t *lines;
   pid_t pid;
   i32 inpd;
-  u0 *buf;
+  char *buf;
 
   if (argc != 3)
     {
@@ -61,6 +66,60 @@ main (int argc, char *argv[])
       perror ("mmap");
       close (inpd);
       exit (EXIT_FAILURE);
+    }
+
+  for (u64 i = 0; i < fsize; ++i)
+    {
+      if ('\n' == buf[i])
+        num_lines++;
+    }
+
+  if (fsize > 0 && buf[fsize - 1] != '\n')
+    num_lines++;
+
+  if ((lines = malloc (sizeof (line_t) * num_lines)) == NULL)
+    {
+      perror ("malloc");
+      munmap (buf, fsize);
+      close (inpd);
+      exit (EXIT_FAILURE);
+    }
+
+  line_index = start = 0;
+  for (u64 i = 0; i < fsize; ++i)
+    {
+      if ('\n' == buf[i])
+        {
+          if (!isspace (*(buf + start)))
+            {
+              lines[line_index].str = buf + start;
+              lines[line_index].size = i - start;
+              ++line_index;
+            }
+
+          start = i + 1;
+        }
+    }
+
+  if (start < fsize)
+    {
+      lines[line_index].str = buf + start;
+      lines[line_index].size = fsize - start;
+    }
+
+  /*
+  for (i32 i = 0; i < lines[2].size; ++i)
+    {
+      putc (*(lines[2].str + i), stdout);
+    }
+*/
+
+  switch (sort_type)
+    {
+      case (SORT_RADIX):
+        {
+          puts ("test");
+        }
     }
 
   munmap (buf, fsize);
