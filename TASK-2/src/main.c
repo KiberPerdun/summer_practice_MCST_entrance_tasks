@@ -52,28 +52,32 @@ main (i32 argc, char *argv[])
 
       char buffer[256];
 
-      struct io_uring_sqe *sqe = io_uring_get_sqe (&ring);
-      io_uring_prep_recv (sqe, fd, buffer, sizeof (buffer), 0);
-
-      io_uring_submit (&ring);
-
-      struct io_uring_cqe * cqe;
-      if (io_uring_wait_cqe (&ring, &cqe) < 0)
+      for (;;)
         {
-          perror ("cqe");
-          io_uring_queue_exit (&ring);
-          close (fd);
-          unix_close (u);
-          unlink ("/tmp/1");
-          exit (EXIT_FAILURE);
-        }
 
-      if (cqe->res > 0)
-        {
-          printf ("recv: %s", buffer);
-        }
+        struct io_uring_sqe *sqe = io_uring_get_sqe (&ring);
+        io_uring_prep_recv (sqe, fd, buffer, sizeof (buffer), 0);
 
-      io_uring_cqe_seen (&ring, cqe);
+        io_uring_submit (&ring);
+
+        struct io_uring_cqe * cqe;
+        if (io_uring_wait_cqe (&ring, &cqe) < 0)
+          {
+            perror ("cqe");
+            io_uring_queue_exit (&ring);
+            close (fd);
+            unix_close (u);
+            unlink ("/tmp/1");
+            exit (EXIT_FAILURE);
+          }
+
+        if (cqe->res > 0)
+          {
+            printf ("recv: %s", buffer);
+          }
+
+        io_uring_cqe_seen (&ring, cqe);
+      }
       io_uring_queue_exit (&ring);
 
       close (fd);
@@ -89,29 +93,32 @@ main (i32 argc, char *argv[])
           exit (EXIT_FAILURE);
         }
 
-      char *buf = malloc ((u16)-1);
-      i64 len = read (0, buf, (u16)-1);
-      if (len < 0)
+      for (;;)
         {
-          perror ("read");
-          unix_close (u);
-          exit (EXIT_FAILURE);
-        }
-      else if (len == 0)
-        {
-          free (buf);
-          unix_close (u);
-          return 0;
-        }
+        char *buf = malloc ((u16)-1);
+        i64 len = read (0, buf, (u16)-1);
+        if (len < 0)
+          {
+            perror ("read");
+            unix_close (u);
+            exit (EXIT_FAILURE);
+          }
+        else if (len == 0)
+          {
+            free (buf);
+            unix_close (u);
+            return 0;
+          }
 
-      if (send (u->fd, buf, len, 0) < 0)
-        {
-          perror ("send");
-          unix_close (u);
-          exit (EXIT_FAILURE);
-        }
+        if (send (u->fd, buf, len, 0) < 0)
+          {
+            perror ("send");
+            unix_close (u);
+            exit (EXIT_FAILURE);
+          }
 
-      free (buf);
+        free (buf);
+      }
       unix_close (u);
     }
 
