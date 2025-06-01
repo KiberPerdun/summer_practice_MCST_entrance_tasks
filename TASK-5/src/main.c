@@ -14,7 +14,8 @@ print_error ()
 {
   printf ("errno: %d\n", errno);
   printf ("strerror: %s", strerror(errno));
-  // printf ("sys_errlist: %s", sys_errlist[errno]);
+  /* sys_errlist оказался deprecated. А тащить к этой задаче старый libc избыточно */
+  /* printf ("sys_errlist: %s", sys_errlist[errno]); */
   perror ("error");
   puts ("\n");
 }
