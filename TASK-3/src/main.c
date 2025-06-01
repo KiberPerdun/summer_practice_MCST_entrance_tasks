@@ -21,6 +21,7 @@ get_sort_type (const char *str)
 {
   if (strcmp (str, "radix") == 0)
     return SORT_RADIX;
+
   else
     {
       fprintf (stderr, "Неизвестный тип сортировки: %s\n", str);
@@ -70,10 +71,8 @@ main (int argc, char *argv[])
 
   num_lines = 0;
   for (u64 i = 0; i < fsize; ++i)
-    {
       if ('\n' == buf[i])
         num_lines++;
-    }
 
   if (fsize > 0 && buf[fsize - 1] != '\n')
     num_lines++;
@@ -88,7 +87,6 @@ main (int argc, char *argv[])
 
   line_index = start = 0;
   for (u64 i = 0; i < fsize; ++i)
-    {
       if ('\n' == buf[i])
         {
           if (i > start && !isspace (*(buf + start)))
@@ -100,7 +98,6 @@ main (int argc, char *argv[])
 
           start = i + 1;
         }
-    }
 
   if (start < fsize)
     {
