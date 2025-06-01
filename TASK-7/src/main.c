@@ -74,6 +74,10 @@ puts_file (const char *filename)
   close (fd);
 }
 
+/*
+ * Отображаю файл в mmap для кеширования файла
+ */
+
 int
 main (int argc, char *argv[])
 {
@@ -132,7 +136,7 @@ main (int argc, char *argv[])
     {
       write_to_file (buf, fsize, FILENAME_PARENT);
       wait (NULL);
-      puts ("parrent file:");
+      puts ("parent file:");
       puts_file (FILENAME_PARENT);
     }
 
