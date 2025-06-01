@@ -44,6 +44,7 @@ main (int argc, char *argv[])
     default:       puts ("Неизвестно?\n");     break;
     }
 
+  /* В идеале выводить информацию о inode */
   printf ("[=+=] inode number  -> %ju\n", sb.st_ino);
   printf ("[=+=] кол-во ссылок -> %ju\n", sb.st_nlink);
   printf ("[=+=] uid владельца -> %ju\n", sb.st_ino);
