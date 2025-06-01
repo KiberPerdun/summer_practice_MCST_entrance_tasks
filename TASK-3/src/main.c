@@ -139,5 +139,7 @@ main (int argc, char *argv[])
     }
 
   munmap (buf, fsize);
+  free (lines);
   close (inpd);
+  close (outfd);
 }
