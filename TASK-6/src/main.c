@@ -47,10 +47,8 @@ main (int argc, char *argv[])
   /* В идеале выводить информацию о inode */
   printf ("[=+=] inode number  -> %ju\n", sb.st_ino);
   printf ("[=+=] кол-во ссылок -> %ju\n", sb.st_nlink);
-  printf ("[=+=] uid владельца -> %ju\n", sb.st_ino);
-  printf ("[=+=] uid владельца -> %ju\n", sb.st_ino);
-
-
+  printf ("[=+=] gid владельца -> %ju\n", sb.st_ino);
+  printf ("[=+=] uid владельца -> %p\n", &sb.st_uid);
 
   printf ("[=+=] размер файла  -> %ju байт\n", sb.st_size);
   printf ("[=+=] размер блока  -> %ju байт\n", sb.st_blksize);
