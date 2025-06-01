@@ -68,6 +68,7 @@ main (int argc, char *argv[])
       exit (EXIT_FAILURE);
     }
 
+  num_lines = 0;
   for (u64 i = 0; i < fsize; ++i)
     {
       if ('\n' == buf[i])
@@ -90,7 +91,7 @@ main (int argc, char *argv[])
     {
       if ('\n' == buf[i])
         {
-          if (!isspace (*(buf + start)))
+          if (i > start && !isspace (*(buf + start)))
             {
               lines[line_index].str = buf + start;
               lines[line_index].size = i - start;
@@ -105,7 +106,9 @@ main (int argc, char *argv[])
     {
       lines[line_index].str = buf + start;
       lines[line_index].size = fsize - start;
+      ++line_index;
     }
+  num_lines = line_index;
 
   /*
   for (i32 i = 0; i < lines[2].size; ++i)
@@ -118,8 +121,24 @@ main (int argc, char *argv[])
     {
       case (SORT_RADIX):
         {
-          puts ("test");
+          radix_sort (lines, num_lines);
         }
+    }
+
+  i32 outfd = open ("output.txt", O_CREAT | O_TRUNC | O_WRONLY, 0644);
+  if (outfd < 0)
+    {
+      perror ("open");
+      free (lines);
+      munmap (buf, fsize);
+      close (inpd);
+      exit (EXIT_FAILURE);
+    }
+
+  for (u64 i = 0; i < num_lines; ++i)
+    {
+      write (outfd, lines[i].str, lines[i].size);
+      write (outfd, "\n", 1);
     }
 
   munmap (buf, fsize);
