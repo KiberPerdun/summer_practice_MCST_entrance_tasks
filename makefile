@@ -16,7 +16,7 @@ task2: liburing
  			 TASK-2/src/*.c $(LIBURING_DIR)/src/liburing.a -o TASK-2/main
 
 task3: TASK-3/src/main.c
-	$(CC) $< -o TASK-3/main
+	$(CC) -I TASK-3/include TASK-3/src/*.c -o TASK-3/main
 
 task4: TASK-4/src/main.c
 	$(CC) -I TASK-4/include TASK-4/src/*.c -o TASK-4/main
