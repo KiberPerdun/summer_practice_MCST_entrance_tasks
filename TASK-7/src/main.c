@@ -13,7 +13,6 @@
 
 #define FILENAME_CHILD  "output_child.txt"
 #define FILENAME_PARENT "output_parent.txt"
-#define BUFFER_SIZE 8912ull
 
 u0
 write_to_file (const u0 *buf, u64 size, const char *filename)
@@ -39,6 +38,37 @@ write_to_file (const u0 *buf, u64 size, const char *filename)
           exit (EXIT_FAILURE);
         }
       wsize_total += wsize;
+    }
+
+  close (fd);
+}
+
+u0
+puts_file (const char *filename)
+{
+  struct stat st;
+  u0 *buf;
+  i32 fd;
+
+  fd = open (filename, O_RDONLY);
+  if (fd < 0)
+    {
+      perror ("open");
+      exit (EXIT_FAILURE);
+    }
+
+  if (fstat (fd, &st) < 0)
+    {
+      perror ("fstat");
+      close (fd);
+      exit (EXIT_FAILURE);
+    }
+
+  buf = mmap (0, st.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
+  if (st.st_size)
+    {
+      write (stdout, buf, st.st_size);
+      munmap (buf, st.st_size);
     }
 
   close (fd);
@@ -94,12 +124,16 @@ main (int argc, char *argv[])
   if (0 == pid)
     {
       write_to_file (buf, fsize, FILENAME_CHILD);
+      puts ("child file:");
+      puts_file (FILENAME_CHILD);
       return 1;
     }
   else
     {
       write_to_file (buf, fsize, FILENAME_PARENT);
       wait (NULL);
+      puts ("parrent file:");
+      puts_file (FILENAME_PARENT);
     }
 
   munmap (buf, fsize);
