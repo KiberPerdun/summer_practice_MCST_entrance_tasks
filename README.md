@@ -9,3 +9,7 @@ make task*
 cd TASK-*
 ./main
 ```
+Либо для сборки всех задач
+```bash
+make all
+```
