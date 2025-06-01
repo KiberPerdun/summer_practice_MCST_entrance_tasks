@@ -73,7 +73,14 @@ main (i32 argc, char *argv[])
 
         if (cqe->res > 0)
           {
+            buffer[cqe->res] = '\0';
             printf ("recv: %s", buffer);
+          }
+        else if (0 == cqe->res)
+          {
+            puts ("client diconnected");
+            io_uring_cqe_seen (&ring, cqe);
+            break;
           }
 
         io_uring_cqe_seen (&ring, cqe);
@@ -100,6 +107,7 @@ main (i32 argc, char *argv[])
         if (len < 0)
           {
             perror ("read");
+            free (buf);
             unix_close (u);
             exit (EXIT_FAILURE);
           }
@@ -113,6 +121,7 @@ main (i32 argc, char *argv[])
         if (send (u->fd, buf, len, 0) < 0)
           {
             perror ("send");
+            free (buf);
             unix_close (u);
             exit (EXIT_FAILURE);
           }
