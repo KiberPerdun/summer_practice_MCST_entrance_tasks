@@ -67,7 +67,7 @@ puts_file (const char *filename)
   buf = mmap (0, st.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
   if (st.st_size)
     {
-      write (stdout, buf, st.st_size);
+      write (STDOUT_FILENO, buf, st.st_size);
       munmap (buf, st.st_size);
     }
 
