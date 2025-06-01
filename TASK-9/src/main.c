@@ -9,7 +9,7 @@
 #include "types.h"
 
 #define TYPE u16
-#define BUFFER_SIZE 8ull
+#define BUFFER_SIZE 1024ull
 
 int
 main (void)
