@@ -18,6 +18,8 @@
 #include <sys/un.h>
 #include <unistd.h>
 
+/* адаптированные методы из libdnet для юникс сокетов */
+
 typedef struct unix_handle
 {
   i32 fd;
