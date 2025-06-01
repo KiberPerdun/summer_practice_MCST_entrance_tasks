@@ -8,6 +8,12 @@
 
 #include "types.h"
 
+/*
+ * В принципе выбор типа данных для буффера работает. Ошибка возникает
+ * только при выводе массива и ответа на экран. Ну и моя реализация
+ * данной задачи не проверяет переполнение буффера результата. Может стать
+ * критичным
+ */
 #define TYPE u16
 #define BUFFER_SIZE 1024ull
 
@@ -15,7 +21,7 @@ int
 main (void)
 {
   TYPE *buf = malloc (BUFFER_SIZE * sizeof (TYPE));
-  i64 max_sum, current_sum, li, ri; // ..., ..., left index, right index
+  i64 max_sum, current_sum, li, ri; /* ..., ..., left index, right index */
   i64 max_start, max_end;
 
   li = ri = 0;
